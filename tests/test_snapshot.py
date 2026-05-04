@@ -1,7 +1,12 @@
 import pandas as pd
 import pytest
 
-from alphasift.snapshot import _normalize, fetch_snapshot_with_fallback
+from alphasift.snapshot import (
+    _normalize,
+    _prepare_tushare_snapshot,
+    fetch_cn_snapshot,
+    fetch_snapshot_with_fallback,
+)
 
 
 def test_normalize_efinance_maps_pb_ratio():
@@ -31,6 +36,67 @@ def test_normalize_efinance_maps_pb_ratio():
     assert normalized.loc[0, "pe_ratio"] == 5.2
     assert normalized.loc[0, "industry"] == "银行"
     assert normalized.loc[0, "concepts"] == "中特估,低估值"
+
+
+def test_prepare_tushare_snapshot_maps_fields_and_units():
+    daily = pd.DataFrame(
+        [
+            {
+                "ts_code": "000001.SZ",
+                "trade_date": "20260430",
+                "close": "10.00",
+                "pct_chg": "1.23",
+                "amount": "123456.789",
+            }
+        ]
+    )
+    daily_basic = pd.DataFrame(
+        [
+            {
+                "ts_code": "000001.SZ",
+                "turnover_rate": "2.5",
+                "volume_ratio": "1.1",
+                "pe": "5.2",
+                "pb": "0.8",
+                "total_mv": "100000",
+                "circ_mv": "80000",
+            }
+        ]
+    )
+    stock_basic = pd.DataFrame(
+        [
+            {
+                "ts_code": "000001.SZ",
+                "symbol": "000001",
+                "name": "平安银行",
+                "industry": "银行",
+            }
+        ]
+    )
+
+    normalized = _prepare_tushare_snapshot(daily, daily_basic, stock_basic)
+
+    assert normalized.loc[0, "code"] == "000001"
+    assert normalized.loc[0, "name"] == "平安银行"
+    assert normalized.loc[0, "price"] == 10.0
+    assert normalized.loc[0, "change_pct"] == 1.23
+    assert normalized.loc[0, "amount"] == pytest.approx(123456789)
+    assert normalized.loc[0, "total_mv"] == pytest.approx(1000000000)
+    assert normalized.loc[0, "circ_mv"] == pytest.approx(800000000)
+    assert normalized.loc[0, "pe_ratio"] == 5.2
+    assert normalized.loc[0, "pb_ratio"] == 0.8
+    assert normalized.loc[0, "volume_ratio"] == 1.1
+    assert normalized.loc[0, "turnover_rate"] == 2.5
+    assert normalized.loc[0, "industry"] == "银行"
+    assert normalized.attrs["snapshot_source"] == "tushare"
+
+
+def test_fetch_tushare_requires_token(monkeypatch):
+    monkeypatch.delenv("TUSHARE_TOKEN", raising=False)
+    monkeypatch.delenv("TUSHARE_API_TOKEN", raising=False)
+
+    with pytest.raises(RuntimeError, match="TUSHARE_TOKEN"):
+        fetch_cn_snapshot("tushare")
 
 
 def test_fetch_snapshot_with_fallback_attaches_source_errors(monkeypatch):

@@ -113,7 +113,7 @@ class Config:
 
     # Snapshot data source priority
     snapshot_source_priority: list[str] = field(
-        default_factory=lambda: ["efinance", "akshare_em", "em_datacenter"]
+        default_factory=lambda: ["efinance", "akshare_em", "em_datacenter", "tushare"]
     )
 
     # Strategy directory
@@ -179,7 +179,10 @@ class Config:
     @classmethod
     def from_env(cls) -> "Config":
         _load_env_file()
-        source_str = os.getenv("SNAPSHOT_SOURCE_PRIORITY", "efinance,akshare_em,em_datacenter")
+        source_str = os.getenv(
+            "SNAPSHOT_SOURCE_PRIORITY",
+            "efinance,akshare_em,em_datacenter,tushare",
+        )
         sources = [s.strip() for s in source_str.split(",") if s.strip()]
         channels = _parse_llm_channels_env()
         llm_model = _resolve_llm_model(channels)
