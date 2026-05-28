@@ -1,0 +1,32 @@
+name: Stock Screening
+
+on:
+  schedule:
+    # Run at 9am China time every weekday
+    - cron: '0 1 * * 1-5'
+  workflow_dispatch:  # Manual trigger button
+
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install alphasift
+        run: pip install -e .
+
+      - name: Run screening
+        run: alphasift screen dual_low --no-llm --save-run
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Post to Telegram
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d '{"chat_id": "${{ secrets.TELEGRAM_CHAT_ID }}", "text": "Daily stock screening complete. Check GitHub Actions logs for results."}'
