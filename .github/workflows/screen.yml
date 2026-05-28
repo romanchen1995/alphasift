@@ -26,7 +26,7 @@ jobs:
       - run: alphasift screen balanced_alpha --no-llm --save-run
       - run: |
           python3 -c "
-import glob,os
+import json, glob,os
 rf=sorted(glob.glob('data/runs/balanced_alpha/*.json'))[-1]
 with open(rf) as f: d=json.load(f)
 open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
