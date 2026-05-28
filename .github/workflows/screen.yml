@@ -24,13 +24,10 @@ jobs:
           python-version: '3.11'
       - run: pip install -e .
       - run: alphasift screen balanced_alpha --no-llm --save-run
-      - run: |
-          python3 -c "
-import json, glob,os
-rf=sorted(glob.glob('data/runs/balanced_alpha/*.json'))[-1]
-with open(rf) as f: d=json.load(f)
-open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
-"
+      - name: Find run file and send Telegram
+        run: |
+          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/balanced_alpha/*.json | head -1)
+          echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
           RUN_FILE: ${{ env.RUN_FILE }}
@@ -47,13 +44,10 @@ open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
           python-version: '3.11'
       - run: pip install -e .
       - run: alphasift screen quality_value --no-llm --save-run
-      - run: |
-          python3 -c "
-import glob,os
-rf=sorted(glob.glob('data/runs/quality_value/*.json'))[-1]
-with open(rf) as f: d=json.load(f)
-open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
-"
+      - name: Find run file and send Telegram
+        run: |
+          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/quality_value/*.json | head -1)
+          echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
           RUN_FILE: ${{ env.RUN_FILE }}
@@ -70,20 +64,16 @@ open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
           python-version: '3.11'
       - run: pip install -e .
       - run: alphasift screen capital_heat --no-llm --save-run
-      - run: |
-          python3 -c "
-import glob,os
-rf=sorted(glob.glob('data/runs/capital_heat/*.json'))[-1]
-with open(rf) as f: d=json.load(f)
-open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
-"
+      - name: Find run file and send Telegram
+        run: |
+          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/capital_heat/*.json | head -1)
+          echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
           RUN_FILE: ${{ env.RUN_FILE }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-
-  volume_breakout:
+            volume_breakout:
     if: github.event.inputs.strategy == 'all' || github.event.inputs.strategy == 'volume_breakout' || github.event.inputs.strategy == ''
     runs-on: ubuntu-latest
     steps:
@@ -93,41 +83,32 @@ open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
           python-version: '3.11'
       - run: pip install -e .
       - run: alphasift screen volume_breakout --no-llm --save-run
-      - run: |
-          python3 -c "
-import glob,os
-rf=sorted(glob.glob('data/runs/volume_breakout/*.json'))[-1]
-with open(rf) as f: d=json.load(f)
-open(os.environ['GITHUB_ENV'],'a').write(f\"RUN_FILE={rf}\n\")
-"
+      - name: Find run file and send Telegram
+        run: |
+          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/volume_breakout/*.json | head -1)
+          echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
           RUN_FILE: ${{ env.RUN_FILE }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT
+          TELEGRAM_BOT_TOKEN: *** secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
-
-shrink_pullback:
-
-
-if: github.event.inputs.strategy == 'all'  github.event.inputs.strategy == 'shrink_pullback'  github.event.inputs.strategy == ''
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- uses: actions/setup-python@v4
-with:
-python-version: '3.11'
-- run: pip install -e .
-- run: alphasift screen shrink_pullback --no-llm --save-run
-- run: |
-python3 -c "
-import glob,os
-rf=sorted(glob.glob('data/runs/shrink_pullback/*.json'))[-1]
-with open(rf) as f: d=json.load(f)
-open(os.environ['GITHUB_ENV'],'a').write(f"RUN_FILE={rf}\n")
-"
-- run: python3 .github/workflows/send_telegram.py
-env:
-RUN_FILE: ${{ env.RUN_FILE }}
-TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  shrink_pullback:
+    if: github.event.inputs.strategy == 'all' || github.event.inputs.strategy == 'shrink_pullback' || github.event.inputs.strategy == ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install -e .
+      - run: alphasift screen shrink_pullback --no-llm --save-run
+      - name: Find run file and send Telegram
+        run: |
+          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/shrink_pullback/*.json | head -1)
+          echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
+      - run: python3 .github/workflows/send_telegram.py
+        env:
+          RUN_FILE: ${{ env.RUN_FILE }}
+          TELEGRAM_BOT_TOKEN: *** secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
