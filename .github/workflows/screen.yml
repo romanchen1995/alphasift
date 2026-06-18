@@ -17,6 +17,8 @@ jobs:
   balanced_alpha:
     if: github.event.inputs.strategy == 'all' || github.event.inputs.strategy == 'balanced_alpha' || github.event.inputs.strategy == ''
     runs-on: ubuntu-latest
+    env:
+      TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -43,6 +45,8 @@ jobs:
   quality_value:
     if: github.event.inputs.strategy == 'all' || github.event.inputs.strategy == 'quality_value' || github.event.inputs.strategy == ''
     runs-on: ubuntu-latest
+    env:
+      TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -69,6 +73,8 @@ jobs:
   capital_heat:
     if: github.event.inputs.strategy == 'all' || github.event.inputs.strategy == 'capital_heat' || github.event.inputs.strategy == ''
     runs-on: ubuntu-latest
+    env:
+      TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -95,6 +101,8 @@ jobs:
   volume_breakout:
     if: github.event.inputs.strategy == 'all' || github.event.inputs.strategy == 'volume_breakout' || github.event.inputs.strategy == ''
     runs-on: ubuntu-latest
+    env:
+      TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -121,6 +129,8 @@ jobs:
   shrink_pullback:
     if: github.event.inputs.strategy == 'all' || github.event.inputs.strategy == 'shrink_pullback' || github.event.inputs.strategy == ''
     runs-on: ubuntu-latest
+    env:
+      TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
