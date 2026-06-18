@@ -35,9 +35,6 @@ for p in picks:
         lines.append(f"   🏷 {' | '.join(tags)}")
     lines.append("")
 
-lines.append("⚠️ 仅供参考，不构成投资建议")
-lines.append("🔗 github.com/romanchen1995/alphasift")
-
 payload = json.dumps({"chat_id": chat_id, "text": "\n".join(lines), "parse_mode": "Markdown"}).encode()
 req = urllib.request.Request(
     f"https://api.telegram.org/bot{token}/sendMessage",
