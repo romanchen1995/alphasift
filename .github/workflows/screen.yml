@@ -26,7 +26,13 @@ jobs:
       - run: alphasift screen balanced_alpha --no-llm --save-run
       - name: Find run file and send Telegram
         run: |
-          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/balanced_alpha/*.json | head -1)
+          RUN_FILE=$(ls -t data/runs/*.json 2>/dev/null | head -1)
+          if [ -z "$RUN_FILE" ]; then
+            echo "❌ No run file found in data/runs/"
+            ls -la data/runs/ 2>/dev/null || echo "data/runs/ does not exist"
+            exit 1
+          fi
+          echo "Using run file: $RUN_FILE"
           echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
@@ -46,7 +52,13 @@ jobs:
       - run: alphasift screen quality_value --no-llm --save-run
       - name: Find run file and send Telegram
         run: |
-          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/quality_value/*.json | head -1)
+          RUN_FILE=$(ls -t data/runs/*.json 2>/dev/null | head -1)
+          if [ -z "$RUN_FILE" ]; then
+            echo "❌ No run file found in data/runs/"
+            ls -la data/runs/ 2>/dev/null || echo "data/runs/ does not exist"
+            exit 1
+          fi
+          echo "Using run file: $RUN_FILE"
           echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
@@ -66,7 +78,13 @@ jobs:
       - run: alphasift screen capital_heat --no-llm --save-run
       - name: Find run file and send Telegram
         run: |
-          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/capital_heat/*.json | head -1)
+          RUN_FILE=$(ls -t data/runs/*.json 2>/dev/null | head -1)
+          if [ -z "$RUN_FILE" ]; then
+            echo "❌ No run file found in data/runs/"
+            ls -la data/runs/ 2>/dev/null || echo "data/runs/ does not exist"
+            exit 1
+          fi
+          echo "Using run file: $RUN_FILE"
           echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
@@ -86,12 +104,18 @@ jobs:
       - run: alphasift screen volume_breakout --no-llm --save-run
       - name: Find run file and send Telegram
         run: |
-          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/volume_breakout/*.json | head -1)
+          RUN_FILE=$(ls -t data/runs/*.json 2>/dev/null | head -1)
+          if [ -z "$RUN_FILE" ]; then
+            echo "❌ No run file found in data/runs/"
+            ls -la data/runs/ 2>/dev/null || echo "data/runs/ does not exist"
+            exit 1
+          fi
+          echo "Using run file: $RUN_FILE"
           echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
           RUN_FILE: ${{ env.RUN_FILE }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }} 
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
   shrink_pullback:
@@ -106,10 +130,16 @@ jobs:
       - run: alphasift screen shrink_pullback --no-llm --save-run
       - name: Find run file and send Telegram
         run: |
-          RUN_FILE=$(ls -t ${{ github.workspace }}/data/runs/shrink_pullback/*.json | head -1)
+          RUN_FILE=$(ls -t data/runs/*.json 2>/dev/null | head -1)
+          if [ -z "$RUN_FILE" ]; then
+            echo "❌ No run file found in data/runs/"
+            ls -la data/runs/ 2>/dev/null || echo "data/runs/ does not exist"
+            exit 1
+          fi
+          echo "Using run file: $RUN_FILE"
           echo "RUN_FILE=$RUN_FILE" >> $GITHUB_ENV
       - run: python3 .github/workflows/send_telegram.py
         env:
           RUN_FILE: ${{ env.RUN_FILE }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }} 
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
